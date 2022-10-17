@@ -1,4 +1,3 @@
-%teste
 
 :-dynamic facto/2,ultimo_facto/1.
 
