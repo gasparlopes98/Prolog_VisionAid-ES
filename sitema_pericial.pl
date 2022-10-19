@@ -1,7 +1,7 @@
-% Vers�o preparada para lidar com regras que contenham nega��o (nao)
+% Versão preparada para lidar com regras que contenham negação (nao)
 % Metaconhecimento
 % Usar base de conhecimento veIculos2.txt
-% Explica��es como?(how?) e porque n�o?(whynot?)
+% Explicações como?(how?) e porque não?(whynot?)
 
 :-op(220,xfx,entao).
 :-op(35,xfy,se).
@@ -13,7 +13,7 @@
 
 
 carrega_bc:-
-		write('NOME DA BASE DE CONHECIMENTO (terminar com .)-> '),
+		write('Knowledge Base Name -> '),
 		read(NBC),
 		consult(NBC).
 
@@ -26,7 +26,7 @@ facto_dispara_regras1(Facto, LRegras):-
 	facto_dispara_regras(Facto, LRegras),
 	!.
 facto_dispara_regras1(_, []).
-% Caso em que o facto n�o origina o disparo de qualquer regra.
+% Caso em que o facto não origina o disparo de qualquer regra.
 
 dispara_regras(N, Facto, [ID|LRegras]):-
 	regra ID se LHS entao RHS,
@@ -95,7 +95,7 @@ cria_facto(F,ID,LFactos):-
 	asserta(ultimo_facto(N)),
 	assertz(justifica(N,ID,LFactos)),
 	assertz(facto(N,F)),
-	write('Foi conclu�do o facto n�writeritewriterite(' ->writerite(F),get0(_),!.
+	write('The fact number '),write(N),write(' was concluded -> '),write(F),get0(_),!.
 
 
 
@@ -113,7 +113,7 @@ compara(V1,=<,V):-V1=<V.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Visualiza��o da base de factos
+% Visualização da base de factos
 
 mostra_factos:-
 	findall(N, facto(N, _), LFactos),
@@ -121,29 +121,29 @@ mostra_factos:-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Gera��o de explica��es do tipo "Como"
+% Geração de explicações do tipo "Como"
 
 como(N):-ultimo_facto(Last),Last<N,!,
-	write('Essa conclus�o n�o foi tirada'),nl,nl.
+	write('That conclusion was not reached'),nl,nl.
 como(N):-justifica(N,ID,LFactos),!,
 	facto(N,F),
-	write('Conclui o facto n� 'writete(Nwritete(' -> 'writete(F),nl,
-	write('pela regra '),write(ID),nl,
-	write('por se ter verificado que:'),nl,
+	write('Concludes fact number '),write(N),write(' -> '),write(F),nl,
+	write('with the rule '),write(ID),nl,
+	write('after verifying that:'),nl,
 	escreve_factos(LFactos),
 	write('********************************************************'),nl,
 	explica(LFactos).
 como(N):-facto(N,F),
-	write('O facto n� 'writete(Nwritete(' -> 'writete(F),nl,
-	write('foi conhecido inicialmente'),nl,
+	write('The fact number '),write(N),write(' -> '),write(F),nl,
+	write('was initially known'),nl,
 	write('********************************************************'),nl.
 
 
 escreve_factos([I|R]):-facto(I,F), !,
-	write('O facto n� 'writete(Iwritete(' -> 'writete(Fwritete(' � verdadeiro'),nl,
+	write('The fact number '),write(I),write(' -> '),write(F),write(' is true'),nl,
 	escreve_factos(R).
 escreve_factos([I|R]):-
-	write('A condi��owriteritewriterite(' � verdadeira'),nl,
+	write('The condition '),write(I),write(' is true'),nl,
 	escreve_factos(R).
 escreve_factos([]).
 
@@ -156,8 +156,8 @@ explica([]):-	write('********************************************************'),
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Gera��o de explica��es do tipo "Porque nao"
-% Exemplo: ?- whynot(classe(meu_veiculo,ligeiro)).
+% Geração de explicações do tipo "Porque nao"
+% Exemplo: ?- whynot(classe(meu_veículo,ligeiro)).
 
 whynot(Facto):-
 	whynot(Facto,1).
@@ -165,18 +165,18 @@ whynot(Facto):-
 whynot(Facto,_):-
 	facto(_, Facto),
 	!,
-	write('O facto '),write(Facto),write(' n�o � falso!'),nl.
+	write('The fact '),write(Facto),write(' is not false!'),nl.
 whynot(Facto,Nivel):-
 	encontra_regras_whynot(Facto,LLPF),
 	whynot1(LLPF,Nivel).
 whynot(nao Facto,Nivel):-
-	formata(Nivel),write('Porque:'),write(' O facto '),write(Facto),
-	write(' � verdadeiro'),nl.
+	formata(Nivel),write('Because:'),write(' The fact '),write(Facto),
+	write(' is true'),nl.
 whynot(Facto,Nivel):-
-	formata(Nivel),write('Porque:'),write(' O facto '),write(Facto),
-	write(' n�o est� definido na base de conhecimento'),nl.
+	formata(Nivel),write('Because:'),write(' The fact '),write(Facto),
+	write(' is not defined in the knowledge base'),nl.
 
-%  As explica��es do whynot(Facto) devem considerar todas as regras que poderiam dar origem a conclus�o relativa ao facto Facto
+%  As explicações do whynot(Facto) devem considerar todas as regras que poderiam dar origem a conclusão relativa ao facto Facto
 
 encontra_regras_whynot(Facto,LLPF):-
 	findall((ID,LPF),
@@ -190,7 +190,7 @@ encontra_regras_whynot(Facto,LLPF):-
 
 whynot1([],_).
 whynot1([(ID,LPF)|LLPF],Nivel):-
-	formata(Nivel),write('Porque pela regra '),write(ID),write(':'),nl,
+	formata(Nivel),write('Because by the rule '),write(ID),write(':'),nl,
 	Nivel1 is Nivel+1,
 	explica_porque_nao(LPF,Nivel1),
 	whynot1(LLPF,Nivel).
@@ -222,14 +222,14 @@ encontra_premissas_falsas([]).
 explica_porque_nao([],_).
 explica_porque_nao([nao avalia(X)|LPF],Nivel):-
 	!,
-	formata(Nivel),write('A condi��o naowriteritewriterite(' � falsa'),nl,
+	formata(Nivel),write('The condition no '),write(X),write(' is false'),nl,
 	explica_porque_nao(LPF,Nivel).
 explica_porque_nao([avalia(X)|LPF],Nivel):-
 	!,
-	formata(Nivel),write('A condi��owriteritewriterite(' � falsa'),nl,
+	formata(Nivel),write('The condition '),write(X),write(' is false'),nl,
 	explica_porque_nao(LPF,Nivel).
 explica_porque_nao([P|LPF],Nivel):-
-	formata(Nivel),write('A premissa '),write(P),write(' � falsa'),nl,
+	formata(Nivel),write('The premise '),write(P),write(' is false'),nl,
 	Nivel1 is Nivel+1,
 	whynot(P,Nivel1),
 	explica_porque_nao(LPF,Nivel).
