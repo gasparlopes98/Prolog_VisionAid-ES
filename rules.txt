@@ -4,13 +4,28 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Metaconhecimento
 
-facto_dispara_regras(tipo(_, passageiros), [1, 3, 8]).
-facto_dispara_regras(tipo(_, mercadorias), [2, 8]).
-facto_dispara_regras(tipo(_, misto), [4]).
-facto_dispara_regras(lotacao(_, _), [5, 7]).
-facto_dispara_regras(peso(_, _), [6, 7]).
-facto_dispara_regras(classe(_, ligeiro), [1]).
-facto_dispara_regras(classe(_, pesado), [2, 3, 4]).
+facto_dispara_regras(size(_, small), [1]).
+facto_dispara_regras(size(_, medium), [2]).
+facto_dispara_regras(size(_, big), [3]).
+facto_dispara_regras(material(_, dopedWithUvFluorescingAgent), [4]).
+facto_dispara_regras(material(_, blackRubber), [5]).
+facto_dispara_regras(material(_, blackPlastic), [6]).
+facto_dispara_regras(material(_, glassTransparentPlastic), [7]).
+facto_dispara_regras(material(_, semiMetalic), [8]).
+facto_dispara_regras(material(_, metalic), [9]).
+facto_dispara_regras(material(_, differentColourPieces), [10]).
+facto_dispara_regras(motion(_, yes), [11]).
+facto_dispara_regras(highlight(_, heightInspection), [12]).
+facto_dispara_regras(highlight(_, holesOrPartSizing), [13]).
+facto_dispara_regras(highlight(_, contours), [14]).
+facto_dispara_regras(highlight(_, colour), [15, 16, 17]).
+facto_dispara_regras(characteristicMaterial(_, reflective), [15]).
+facto_dispara_regras(characteristicMaterial(_, shiny), [16]).
+facto_dispara_regras(characteristicMaterial(_, others), [17]).
+facto_dispara_regras(externalLight(_, yes), [18, 19, 20]).
+facto_dispara_regras(typeLight(_, IR), [18]).
+facto_dispara_regras(typeLight(_, UV), [19]).
+facto_dispara_regras(typeLight(_, other), [20]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -18,45 +33,93 @@ facto_dispara_regras(classe(_, pesado), [2, 3, 4]).
 ultimo_facto(3).
 % ultima_regra(8).
 
+
+% Object size
 regra 1
-	se [tipo(Veiculo,passageiros) e classe(Veiculo,ligeiro)]
-	entao [cria_facto(ligeiro(Veiculo,carro))].
+	se [size(object, small)]
+	entao [cria_facto(lens(object, 25mm))].
 
 regra 2
-	se [tipo(Veiculo,mercadorias) e classe(Veiculo,pesado)]
-	entao [cria_facto(pesado(Veiculo,camiao))].
+	se [size(object, medium)]
+	entao [cria_facto(lens(object, 16mm))].
 
 regra 3
-	se [tipo(Veiculo,passageiros) e classe(Veiculo,pesado)]
-	entao [cria_facto(pesado(Veiculo,autocarro))].
+	se [size(object, big)]
+	entao [cria_facto(lens(object, 12.5mm))].
 
+% Material type
 regra 4
-	se [tipo(Veiculo,misto) e classe(Veiculo,pesado)]
-	entao [cria_facto(pesado(Veiculo,camioneta))].
+	se [material(object, dopedWithUvFluorescingAgent)]
+	entao [cria_facto(light(object, ultraViolet))].
 
 regra 5
-	se [avalia(lotacao(Veiculo,>,9))]
-	entao [cria_facto(classe(Veiculo,pesado))].
+	se [material(object, blackRubber)]
+	entao [cria_facto(light(object, blue) or light(object, white))].
 
 regra 6
-	se [avalia(peso(Veiculo,>,3500))]
-	entao [cria_facto(classe(Veiculo,pesado))].
+	se [material(object, blackPlastic)]
+	entao [cria_facto(light(object, white) or light(object, infrared))].
 
 regra 7
-	se [avalia(lotacao(Veiculo,=<,9)) e avalia(peso(Veiculo,=<,3500))]
-	entao [cria_facto(classe(Veiculo,ligeiro))].
+	se [material(object, glass) or material(object, transparentPlastic))]
+	entao [cria_facto(light(object, red) or light(object, infrared))].
 
 regra 8
-	se [tipo(Veiculo,mercadorias) e tipo(Veiculo,passageiros)]
-	entao [cria_facto(tipo(Veiculo,misto))].
+	se [material(object, semiMetalic)]
+	entao [cria_facto(light(object, white) or light(object, red) or light(object, infrared))].
 
+regra 9
+	se [material(object, metalic)]
+	entao [cria_facto(light(object, white) or light(object, blue) or light(object, green) or light(object, red) or light(object, infrared))]
 
+regra 10
+	se [material(object, differentColourPieces)]
+	entao [cria_facto(light(object, white) or light(object, RGB))]
 
+% Motion light
+regra 11
+	se [motion(object, yes)]
+	entao [cria_facto(mode(object, lightInStrobe))]
+
+% Highlights
+regra 12
+	se [highlight(object,heightInspection)]
+	entao [cria_facto(lightWith(object, laserLightWith60degreeRelativeCamera))]
+
+regra 13
+	se [highlight(object, holes) or highlight(object, partSizing))]
+	entao [cria_facto(lightWith(object, backlight))]
+
+regra 14
+	se [highlight(object, contours)]
+	entao [cria_facto(lightWith(object, lightWithIncidentAngle))]
+
+% Material Caracteristics
+regra 15
+	se [highlight(object, colour) e characteristicMaterial(object, reflective)]
+	entao [cria_facto(lightWith(object, coaxialLight))]
+
+regra 16
+	se [highlight(object, colour) e characteristicMaterial(object, shiny)]
+	entao [cria_facto(lightWith(object, uniformIncidentLight) e lightWith(object, polarizingFilter))]
+
+regra 17
+	se [highlight(object, colour) e characteristicMaterial(object, others)]
+	entao [cria_facto(lightWith(object, directLight))]
+
+% External light influence
+regra 18
+	se [externalLight(object, yes) e typeLight(object, IR)]
+	entao [cria_facto(bandpassFilter(object, 700nm))]
+
+regra 19
+	se [externalLight(object, yes) e typeLight(object, UV)]
+	entao [cria_facto(bandpassFilter(object, 400nm))]
+
+regra 20
+	se [externalLight(object, yes) e typeLight(object, other)]
+	entao [cria_facto(bandpassFilter(object, closeVisionSetup))]
 
 facto(1,lotacao(meu_veiculo,3)).
 facto(2,peso(meu_veiculo,4500)).
 facto(3,tipo(meu_veiculo,mercadorias)).
-
-
-
-
