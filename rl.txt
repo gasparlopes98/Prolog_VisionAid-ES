@@ -27,8 +27,7 @@ facto_dispara_regras(typeLight(_, other), [21]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-ultimo_facto(3).
+ultimo_facto(0).
 % ultima_regra(8).
 
 
@@ -122,6 +121,16 @@ regra 21
 	se [externalLight(Object, yes) e typeLight(Object, other)]
 	entao [cria_facto(bandpassFilter(Object, closeVisionSetup))].
 
-facto(1,size(objeto_1,200)).
-facto(2,material(objeto_1,blackRubber)).
-facto(3,highlight(objeto_1,contours)).
+%facto(1,size(objeto_1,200)).
+%facto(2,material(objeto_1,blackRubber)).
+%facto(3,highlight(objeto_1,contours)).
+
+%cria_facto(characteristicMaterial(objeto_3,reflective),_,_).
+
+% size(O,sizeO)
+% material(O,materialO)
+% motion(O,Y/N)
+% highlight(O, highlightO)
+% characteristicMaterial(O, charO)
+% externalLight(O, Y/N)
+% typeLight(O, typeO)
