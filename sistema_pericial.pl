@@ -13,9 +13,15 @@
 
 
 carrega_bc:-
-		write('Knowledge Base Name -> '),
-		read(NBC),
-		consult(NBC).
+		write('=== Loading Knowledge Base ==='),nl,
+		consult("rl.txt").
+
+help:-
+	write('- Para Carregar a BC: carrega_bc'),nl,
+	write('- Para Inserir Objeto: inserir_objeto'),nl,
+	write('- Para Arrancar o MI: arranca_motor'),nl,
+	write('- Para Mostrar Factos: mostra_factos'),nl,
+	write('- Para Perceber Facto (N - número de facto): como(N)'),nl.
 
 arranca_motor:-	facto(N,Facto),
 		facto_dispara_regras1(Facto, LRegras),
@@ -31,7 +37,7 @@ facto_dispara_regras1(_, []).
 dispara_regras(N, Facto, [ID|LRegras]):-
 	regra ID se LHS entao RHS,
 	facto_esta_numa_condicao(Facto,LHS),
-	% Instancia Facto em LHS
+% Instancia Facto em LHS
 	verifica_condicoes(LHS, LFactos),
 	member(N,LFactos),
 	concluir(RHS,ID,LFactos),
@@ -84,7 +90,42 @@ concluir([cria_facto(F)|Y],ID,LFactos):-
 
 concluir([],_,_):-!.
 
+% Criar factos
+%
+% Objeto: 
+% - tipo material
+% - está em movimento?
+% - O que quer inspecionar no objeto?
+% - Caracteristicas do material?
+% - Luz externa? 
+%	- se sim qual?
 
+inserir_objeto:-
+	write('Nome do Objeto:'),
+	read(Nome),
+	write('Qual o tamanho do objeto'),
+	read(Size),
+	write('Tipo de material?'),
+	read(Tipo),
+	write('Está em movimento?'),
+	read(Mov),
+	write('O que quer inspecionar?'),
+	read(Highlight),
+	write('Caracteristicas do objeto?'),
+	read(Char),
+	cria_facto1(size(Nome,Size)),
+	cria_facto1(material(Nome,Tipo)),
+	cria_facto1(motion(Nome,Mov)),
+	cria_facto1(highlight(Nome,Highlight)),
+	cria_facto1(highlight(Nome,Char)).
+	
+
+cria_facto1(F):-
+	retract(ultimo_facto(N1)),
+	N is N1+1,
+	asserta(ultimo_facto(N)),
+	assertz(facto(N,F)),
+	write('The fact number '),write(N),write(' was concluded -> '),write(F),get0(_),!.
 
 cria_facto(F,_,_):-
 	facto(_,F),!.
@@ -136,12 +177,15 @@ como(N):-justifica(N,ID,LFactos),!,
 como(N):-facto(N,F),
 	write('The fact number '),write(N),write(' -> '),write(F),nl,
 	write('was initially known'),nl,
-	write('********************************************************'),nl.
+	write('********************************************************'),nl,!.
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Escreve factos -> chamado no como e no mostra_factos
 
 escreve_factos([I|R]):-facto(I,F), !,
 	write('The fact number '),write(I),write(' -> '),write(F),write(' is true'),nl,
-	escreve_factos(R).
+	escreve_factos(R),!.
 escreve_factos([I|R]):-
 	write('The condition '),write(I),write(' is true'),nl,
 	escreve_factos(R).
