@@ -1,6 +1,7 @@
 % Versão preparada para lidar com regras que contenham negação (nao)
 % Metaconhecimento
 % Usar base de conhecimento veIculos2.txt
+% asdsada
 % Explicações como?(how?) e porque não?(whynot?)
 
 :-op(220,xfx,entao).
