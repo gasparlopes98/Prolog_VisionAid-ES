@@ -11,7 +11,7 @@ facto_dispara_regras(material(_, blackRubber), [5]).
 facto_dispara_regras(material(_, blackPlastic), [6]).
 facto_dispara_regras(material(_, glassTransparentPlastic), [7]).
 facto_dispara_regras(material(_, semiMetalic), [8]).
-facto_dispara_regras(material(_, metalic), [9]).
+facto_dispara_regras(material(_, metalic), [5,6,7,8,9]).
 facto_dispara_regras(material(_, differentColourPieces), [10]).
 facto_dispara_regras(motion(_, yes), [11]).
 facto_dispara_regras(highlight(_, heightInspection), [12]).

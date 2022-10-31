@@ -39,6 +39,7 @@ facto_dispara_regras1(Facto, LRegras):-
 	facto_dispara_regras(Facto, LRegras),
 	!.
 facto_dispara_regras1(_, []).
+
 % Caso em que o facto não origina o disparo de qualquer regra.
 
 dispara_regras(N, Facto, [ID|LRegras]):-
