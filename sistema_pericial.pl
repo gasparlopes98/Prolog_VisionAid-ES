@@ -9,13 +9,19 @@
 :-op(240,fx,regra).
 :-op(500,fy,nao).
 :-op(600,xfy,e).
+:-op(700,xfy,ou).
 
 :-dynamic justifica/3.
 
 
+%carrega_bc:-
+%		write('=== Loading Knowledge Base ==='),nl,
+%		consult"C:/Users/João/Desktop/ISEP/1_Ano/1-Desafio/Prolog/Prolog_VisionAid-ES/rl.txt".
+
 carrega_bc:-
-		write('=== Loading Knowledge Base ==='),nl,
-		consult("rl.txt").
+		write('NOME DA BASE DE CONHECIMENTO (terminar com .)-> '),
+		read(NBC),
+		consult(NBC).
 
 help:-
 	write('- Para Carregar a BC: carrega_bc'),nl,
