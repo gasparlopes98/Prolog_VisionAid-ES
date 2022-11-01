@@ -14,6 +14,10 @@
 :-dynamic justifica/3.
 
 
+debug(N):- write(N),write('\n').
+debug_message(M,N):- write(M), write(": "),write(N),write('\n').
+
+
 %carrega_bc:-
 %		write('=== Loading Knowledge Base ==='),nl,
 %		consult"C:/Users/João/Desktop/ISEP/1_Ano/1-Desafio/Prolog/Prolog_VisionAid-ES/rl.txt".
@@ -96,6 +100,8 @@ verifica_condicoes([avalia(X)],[N]):- !, avalia(N,X).
 verifica_condicoes([nao X e Y],[nao X|LF]):- !,
 	\+ facto(_,X),
 	verifica_condicoes([Y],LF).
+
+
 verifica_condicoes([X e Y],[N|LF]):- !,
 	facto(N,X),
 	verifica_condicoes([Y],LF).
@@ -104,11 +110,10 @@ verifica_condicoes([nao X ou Y],[nao X|LF]):- !,
 	\+ facto(_,X),
 	verifica_condicoes([Y],LF).
 
-verifica_condicoes([X ou Y],[N|LF]):- 
-	facto(N,X),
-	verifica_condicoes([Y],LF).	
+verifica_condicoes([X ou _],[N|_]):- 
+	facto(N,X).
 
-verifica_condicoes([_ ou Y],[N|LF]):- 
+verifica_condicoes([_ ou Y],[_|LF]):- 
 	verifica_condicoes([Y],LF).		
 
 verifica_condicoes([nao X],[nao X]):- !, \+ facto(_,X).
