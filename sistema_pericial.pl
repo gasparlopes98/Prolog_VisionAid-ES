@@ -60,9 +60,15 @@ dispara_regras(_, _, []).
 
 facto_esta_numa_condicao(F,[F  e _]).
 
+facto_esta_numa_condicao(F,[F  ou _]).
+
 facto_esta_numa_condicao(F,[avalia(F1)  e _]):- F=..[H,H1|_],F1=..[H,H1|_].
 
+facto_esta_numa_condicao(F,[avalia(F1)  ou _]):- F=..[H,H1|_],F1=..[H,H1|_].
+
 facto_esta_numa_condicao(F,[_ e Fs]):- facto_esta_numa_condicao(F,[Fs]).
+
+facto_esta_numa_condicao(F,[_ ou Fs]):- facto_esta_numa_condicao(F,[Fs]).
 
 facto_esta_numa_condicao(F,[F]).
 
@@ -76,6 +82,14 @@ verifica_condicoes([avalia(X) e Y],[N|LF]):- !,
 	avalia(N,X),
 	verifica_condicoes([Y],LF).
 
+verifica_condicoes([nao avalia(X) ou Y],[nao X|LF]):- !,
+	\+ avalia(_,X),
+	verifica_condicoes([Y],LF).
+
+verifica_condicoes([avalia(X) ou Y],[N|LF]):- !,
+	avalia(N,X),
+	verifica_condicoes([Y],LF).	
+
 verifica_condicoes([nao avalia(X)],[nao X]):- !, \+ avalia(_,X).
 verifica_condicoes([avalia(X)],[N]):- !, avalia(N,X).
 
@@ -85,6 +99,17 @@ verifica_condicoes([nao X e Y],[nao X|LF]):- !,
 verifica_condicoes([X e Y],[N|LF]):- !,
 	facto(N,X),
 	verifica_condicoes([Y],LF).
+
+verifica_condicoes([nao X ou Y],[nao X|LF]):- !,
+	\+ facto(_,X),
+	verifica_condicoes([Y],LF).
+
+verifica_condicoes([X ou Y],[N|LF]):- 
+	facto(N,X),
+	verifica_condicoes([Y],LF).	
+
+verifica_condicoes([_ ou Y],[N|LF]):- 
+	verifica_condicoes([Y],LF).		
 
 verifica_condicoes([nao X],[nao X]):- !, \+ facto(_,X).
 verifica_condicoes([X],[N]):- facto(N,X).
