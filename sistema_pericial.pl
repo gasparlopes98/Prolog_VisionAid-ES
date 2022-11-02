@@ -1,6 +1,7 @@
 % Versão preparada para lidar com regras que contenham negação (nao)
 % Metaconhecimento
 % Usar base de conhecimento veIculos2.txt
+% asdsada
 % Explicações como?(how?) e porque não?(whynot?)
 
 :-op(220,xfx,entao).
@@ -8,13 +9,23 @@
 :-op(240,fx,regra).
 :-op(500,fy,nao).
 :-op(600,xfy,e).
+:-op(700,xfy,ou).
 
 :-dynamic justifica/3.
 
 
+debug(N):- write(N),write('\n').
+debug_message(M,N):- write(M), write(": "),write(N),write('\n').
+
+
+%carrega_bc:-
+%		write('=== Loading Knowledge Base ==='),nl,
+%		consult"C:/Users/João/Desktop/ISEP/1_Ano/1-Desafio/Prolog/Prolog_VisionAid-ES/rl.txt".
+
 carrega_bc:-
-		write('=== Loading Knowledge Base ==='),nl,
-		consult("rl.txt").
+		write('NOME DA BASE DE CONHECIMENTO (terminar com .)-> '),
+		read(NBC),
+		consult(NBC).
 
 help:-
 	write('- Para Carregar a BC: carrega_bc'),nl,
@@ -32,6 +43,7 @@ facto_dispara_regras1(Facto, LRegras):-
 	facto_dispara_regras(Facto, LRegras),
 	!.
 facto_dispara_regras1(_, []).
+
 % Caso em que o facto não origina o disparo de qualquer regra.
 
 dispara_regras(N, Facto, [ID|LRegras]):-
@@ -52,9 +64,15 @@ dispara_regras(_, _, []).
 
 facto_esta_numa_condicao(F,[F  e _]).
 
+facto_esta_numa_condicao(F,[F  ou _]).
+
 facto_esta_numa_condicao(F,[avalia(F1)  e _]):- F=..[H,H1|_],F1=..[H,H1|_].
 
+facto_esta_numa_condicao(F,[avalia(F1)  ou _]):- F=..[H,H1|_],F1=..[H,H1|_].
+
 facto_esta_numa_condicao(F,[_ e Fs]):- facto_esta_numa_condicao(F,[Fs]).
+
+facto_esta_numa_condicao(F,[_ ou Fs]):- facto_esta_numa_condicao(F,[Fs]).
 
 facto_esta_numa_condicao(F,[F]).
 
@@ -68,15 +86,35 @@ verifica_condicoes([avalia(X) e Y],[N|LF]):- !,
 	avalia(N,X),
 	verifica_condicoes([Y],LF).
 
+verifica_condicoes([nao avalia(X) ou Y],[nao X|LF]):- !,
+	\+ avalia(_,X),
+	verifica_condicoes([Y],LF).
+
+verifica_condicoes([avalia(X) ou Y],[N|LF]):- !,
+	avalia(N,X),
+	verifica_condicoes([Y],LF).	
+
 verifica_condicoes([nao avalia(X)],[nao X]):- !, \+ avalia(_,X).
 verifica_condicoes([avalia(X)],[N]):- !, avalia(N,X).
 
 verifica_condicoes([nao X e Y],[nao X|LF]):- !,
 	\+ facto(_,X),
 	verifica_condicoes([Y],LF).
+
+
 verifica_condicoes([X e Y],[N|LF]):- !,
 	facto(N,X),
 	verifica_condicoes([Y],LF).
+
+verifica_condicoes([nao X ou Y],[nao X|LF]):- !,
+	\+ facto(_,X),
+	verifica_condicoes([Y],LF).
+
+verifica_condicoes([X ou _],[N|_]):- 
+	facto(N,X).
+
+verifica_condicoes([_ ou Y],[_|LF]):- 
+	verifica_condicoes([Y],LF).		
 
 verifica_condicoes([nao X],[nao X]):- !, \+ facto(_,X).
 verifica_condicoes([X],[N]):- facto(N,X).

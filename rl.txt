@@ -1,16 +1,17 @@
 
 :-dynamic facto/2,ultimo_facto/1.
+:- dynamic justifica/3.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Metaconhecimento
 
 facto_dispara_regras(size(_, _), [1, 2, 3]).
 facto_dispara_regras(material(_, dopedWithUvFluorescingAgent), [4]).
-facto_dispara_regras(material(_, blackRubber), [5]).
-facto_dispara_regras(material(_, blackPlastic), [6]).
-facto_dispara_regras(material(_, glassTransparentPlastic), [7]).
-facto_dispara_regras(material(_, semiMetalic), [8]).
-facto_dispara_regras(material(_, metalic), [9]).
+facto_dispara_regras(material(_, blackRubber), [5,6]).
+facto_dispara_regras(material(_, blackPlastic), [6,8]).
+facto_dispara_regras(material(_, glassTransparentPlastic), [7,8]).
+facto_dispara_regras(material(_, semiMetalic), [6,7,8]).
+facto_dispara_regras(material(_, metalic), [5,6,7,8,9]).
 facto_dispara_regras(material(_, differentColourPieces), [10]).
 facto_dispara_regras(motion(_, yes), [11]).
 facto_dispara_regras(highlight(_, heightInspection), [12]).
@@ -50,19 +51,20 @@ regra 4
 	entao [cria_facto(light(Object, ultraViolet))].
 
 regra 5
-	se [material(Object, blackRubber)]
+	%se [material(Object, blackRubber) ou material(Object, metalic)]
+	se [material(Object, blackRubber) ou material(Object, metalic)]
 	entao [cria_facto(light(Object, blue))].
 
 regra 6
-	se [material(Object, blackPlastic)]
+	se [material(Object, blackPlastic) ou material(Object, blackRubber) ou material(Object, semiMetalic) ou material(Object, metalic) ou material(Object, differentColourPieces)]
 	entao [cria_facto(light(Object, white))].
 
 regra 7
-	se [material(Object, glassTransparentPlastic)]
+	se [material(Object, glassTransparentPlastic) ou material(Object, semiMetalic) ou material(Object, metalic)]
 	entao [cria_facto(light(Object, red))].
 
 regra 8
-	se [material(Object, semiMetalic)]
+	se [material(Object, semiMetalic) ou material(Object, glassTransparentPlastic) ou material(Object, metalic) ou material(Object,blackPlastic)]
 	entao [cria_facto(light(Object, infrared))].
 
 regra 9
@@ -122,7 +124,7 @@ regra 21
 	entao [cria_facto(bandpassFilter(Object, closeVisionSetup))].
 
 %facto(1,size(objeto_1,200)).
-%facto(2,material(objeto_1,blackRubber)).
+%facto(2,material(objeto_1,dopedWithUvFluorescingAgent)).
 %facto(3,highlight(objeto_1,contours)).
 
 %cria_facto(characteristicMaterial(objeto_3,reflective),_,_).
