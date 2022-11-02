@@ -8,7 +8,7 @@
 facto_dispara_regras(size(_, _), [1, 2, 3]).
 facto_dispara_regras(material(_, dopedWithUvFluorescingAgent), [4]).
 facto_dispara_regras(material(_, blackRubber), [5,6]).
-facto_dispara_regras(material(_, blackPlastic), [6]).
+facto_dispara_regras(material(_, blackPlastic), [6,8]).
 facto_dispara_regras(material(_, glassTransparentPlastic), [7,8]).
 facto_dispara_regras(material(_, semiMetalic), [6,7,8]).
 facto_dispara_regras(material(_, metalic), [5,6,7,8,9]).
@@ -64,7 +64,7 @@ regra 7
 	entao [cria_facto(light(Object, red))].
 
 regra 8
-	se [material(Object, semiMetalic) ou material(Object, glassTransparentPlastic) ou material(Object, metalic)]
+	se [material(Object, semiMetalic) ou material(Object, glassTransparentPlastic) ou material(Object, metalic) ou material(Object,blackPlastic)]
 	entao [cria_facto(light(Object, infrared))].
 
 regra 9
