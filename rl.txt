@@ -32,7 +32,7 @@ ultimo_facto(0).
 % ultima_regra(8).
 
 
-% Object size
+% === Object size === 
 regra 1
 	se [avalia(size(Object,=<,100))]
 	entao [cria_facto(lens(Object, vinteCincomm))].
@@ -45,7 +45,7 @@ regra 3
 	se [avalia(size(Object,>,100)) e avalia(size(Object,=<,300))]
 	entao [cria_facto(lens(Object, dezasseismm))].
 
-% Material type
+% === Material type ===
 regra 4
 	se [material(Object, dopedWithUvFluorescingAgent)]
 	entao [cria_facto(light(Object, ultraViolet))].
@@ -75,12 +75,12 @@ regra 10
 	se [material(Object, differentColourPieces)]
 	entao [cria_facto(light(Object, rgb))].
 
-% Motion light
+% === Motion light === 
 regra 11
 	se [motion(Object, yes)]
 	entao [cria_facto(mode(Object, lightInStrobe))].
 
-% Highlights
+% === Highlights === 
 regra 12
 	se [highlight(Object,heightInspection)]
 	entao [cria_facto(lightWith(Object, laserLightWith60degreeRelativeCamera))].
@@ -93,7 +93,7 @@ regra 14
 	se [highlight(Object, contours)]
 	entao [cria_facto(lightWith(Object, lightWithIncidentAngle))].
 
-% Material Caracteristics
+% === Material Caracteristics === 
 regra 15
 	se [highlight(Object, colour) e characteristicMaterial(Object, reflective)]
 	entao [cria_facto(lightWith(Object, coaxialLight))].
@@ -110,7 +110,7 @@ regra 18
 	se [highlight(Object, colour) e characteristicMaterial(Object, others)]
 	entao [cria_facto(lightWith(Object, directLight))].
 
-% External light influence
+% === External light influence === 
 regra 19
 	se [externalLight(Object, yes) e typeLight(Object, ir)]
 	entao [cria_facto(bandpassFilter(Object, band700nm))].
@@ -128,6 +128,7 @@ regra 21
 %facto(3,highlight(objeto_1,contours)).
 
 %cria_facto(characteristicMaterial(objeto_3,reflective),_,_).
+%whynot(lens(ob1, vinteCincomm)).
 
 % size(O,sizeO)
 % material(O,materialO)

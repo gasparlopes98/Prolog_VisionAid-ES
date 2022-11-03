@@ -137,6 +137,21 @@ concluir([],_,_):-!.
 % - Caracteristicas do material?
 % - Luz externa? 
 %	- se sim qual?
+condicao1(Facto,Nome,String):-
+	findall(Facto, facto(_,Facto), LFactos),
+	length(LFactos,Leng),
+	Leng>0,
+	write(String),nl,
+	read(Result),
+	cria_facto1(characteristicMaterial(Nome,Result)).
+
+condicao2(Facto,Nome,String):-
+	findall(Facto, facto(_,Facto), LFactos),
+	length(LFactos,Leng),
+	Leng>0,
+	write(String),nl,
+	read(Result),
+	cria_facto1(typeLight(Nome,Result)).
 
 inserir_objeto:-
 	write('Nome do Objeto:'),
@@ -149,13 +164,15 @@ inserir_objeto:-
 	read(Mov),
 	write('O que quer inspecionar?'),
 	read(Highlight),
-	write('Caracteristicas do objeto?'),
-	read(Char),
+	write('Luz externa?'),
+	read(Ext),
 	cria_facto1(size(Nome,Size)),
 	cria_facto1(material(Nome,Tipo)),
 	cria_facto1(motion(Nome,Mov)),
 	cria_facto1(highlight(Nome,Highlight)),
-	cria_facto1(highlight(Nome,Char)).
+	cria_facto1(externalLight(Nome,Ext)),
+	condicao1(highlight(Nome,colour),Nome,"Caracteristica do material?"),
+	condicao2(externalLight(Nome,yes),Nome,"Qual o tipo de luz?").
 	
 
 cria_facto1(F):-
