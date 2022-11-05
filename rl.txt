@@ -4,25 +4,25 @@
 % Metaconhecimento
 
 facto_dispara_regras(size(_, _), [1, 2, 3]).
-facto_dispara_regras(material(_, dopedWithUvFluorescingAgent), [4]).
-facto_dispara_regras(material(_, blackRubber), [5,6]).
-facto_dispara_regras(material(_, blackPlastic), [6,8]).
-facto_dispara_regras(material(_, glassTransparentPlastic), [7,8]).
-facto_dispara_regras(material(_, semiMetalic), [6,7,8]).
-facto_dispara_regras(material(_, metalic), [5,6,7,8,9]).
-facto_dispara_regras(material(_, differentColourPieces), [6,10]).
-facto_dispara_regras(motion(_, sim), [11]).
-facto_dispara_regras(highlight(_, heightInspection), [12]).
-facto_dispara_regras(highlight(_, holesOrPartSizing), [13]).
-facto_dispara_regras(highlight(_, contours), [14]).
-facto_dispara_regras(highlight(_, colour), [15, 16, 17, 18]).
-facto_dispara_regras(characteristicMaterial(_, reflective), [15]).
-facto_dispara_regras(characteristicMaterial(_, shiny), [16, 17]).
-facto_dispara_regras(characteristicMaterial(_, others), [18]).
-facto_dispara_regras(externalLight(_, sim), [19, 20, 21]).
-facto_dispara_regras(typeLight(_, ir), [19]).
-facto_dispara_regras(typeLight(_, uv), [20]).
-facto_dispara_regras(typeLight(_, other), [21]).
+facto_dispara_regras(material(_, dopedWithUvFluorescingAgent), [5, 6, 7]).
+facto_dispara_regras(material(_, blackRubber), [8, 9]).
+facto_dispara_regras(material(_, blackPlastic), [9, 11]).
+facto_dispara_regras(material(_, glassTransparentPlastic), [10, 11]).
+facto_dispara_regras(material(_, semiMetalic), [9, 10, 11]).
+facto_dispara_regras(material(_, metalic), [8, 9, 10, 11, 12]).
+facto_dispara_regras(material(_, differentColourPieces), [9, 13]).
+facto_dispara_regras(motion(_, sim), [14]).
+facto_dispara_regras(highlight(_, heightInspection), [15]).
+facto_dispara_regras(highlight(_, holesOrPartSizing), [16]).
+facto_dispara_regras(highlight(_, contours), [17]).
+facto_dispara_regras(highlight(_, colour), [18, 19, 20, 21]).
+facto_dispara_regras(characteristicMaterial(_, reflective), [18]).
+facto_dispara_regras(characteristicMaterial(_, shiny), [19, 20]).
+facto_dispara_regras(characteristicMaterial(_, others), [21]).
+facto_dispara_regras(externalLight(_, sim), [4, 5, 6]).
+facto_dispara_regras(typeLight(_, ir), [4, 11]).
+facto_dispara_regras(typeLight(_, uv), [5, 6]).
+facto_dispara_regras(typeLight(_, other), [6]).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -43,66 +43,79 @@ regra 3
 	se [avalia(size(Object,>,100)) e avalia(size(Object,=<,300))]
 	entao [cria_facto(lens(Object, dezasseismm))].
 
-% === Material type ===
+% === External light influence === 
 regra 4
+	se [externalLight(Object, sim) e typeLight(Object, ir)]
+	entao [cria_facto(filter(Object, filter700nm))].
+
+regra 5
+	se [externalLight(Object, sim) e typeLight(Object, uv) e not(material(Object, dopedWithUvFluorescingAgent))]
+	entao [cria_facto(filter(Object, filter400nm))].
+
+regra 6
+	se [externalLight(Object, sim) e (typeLight(Object, other) ou (typeLight(Object, uv) e material(Object, dopedWithUvFluorescingAgent)))]
+	entao [cria_facto(filter(Object, closeVisionSetup))].
+
+% === Material type ===
+regra 7
 	se [material(Object, dopedWithUvFluorescingAgent)]
 	entao [cria_facto(light(Object, ultraViolet))].
 
-regra 5
+regra 8
 	se [material(Object, blackRubber) ou material(Object, metalic)]
 	entao [cria_facto(light(Object, blue))].
 
-regra 6
+regra 9
 	se [material(Object, blackPlastic) ou material(Object, blackRubber) ou material(Object, semiMetalic) ou material(Object, metalic) ou material(Object, differentColourPieces)]
 	entao [cria_facto(light(Object, white))].
 
-regra 7
+regra 10
 	se [material(Object, glassTransparentPlastic) ou material(Object, semiMetalic) ou material(Object, metalic)]
 	entao [cria_facto(light(Object, red))].
 
-regra 8
-	se [material(Object, semiMetalic) ou material(Object, glassTransparentPlastic) ou material(Object, metalic) ou material(Object,blackPlastic)]
+regra 11
+	se [nao(typeLight(Object, ir)) e (material(Object, semiMetalic) ou material(Object, glassTransparentPlastic) ou material(Object, metalic) ou material(Object,blackPlastic))]
 	entao [cria_facto(light(Object, infrared))].
 
-regra 9
+regra 12
 	se [material(Object, metalic)]
 	entao [cria_facto(light(Object, green))].
 
-regra 10
+regra 13
 	se [material(Object, differentColourPieces)]
 	entao [cria_facto(light(Object, rgb))].
 
 % === Motion light === 
-regra 11
+regra 14
 	se [motion(Object, sim)]
 	entao [cria_facto(mode(Object, lightInStrobe))].
 
 % === Highlights === 
-regra 12
+regra 15
 	se [highlight(Object,heightInspection)]
 	entao [cria_facto(lightWith(Object, laserLightWith60degreeRelativeCamera))].
 
-regra 13
+regra 16
 	se [highlight(Object, holesOrPartSizing)]
 	entao [cria_facto(lightWith(Object, backlight))].
 
-regra 14
+regra 17
 	se [highlight(Object, contours)]
 	entao [cria_facto(lightWith(Object, lightWithIncidentAngle))].
 
 % === Material Caracteristics === 
-regra 15
+regra 18
 	se [highlight(Object, colour) e characteristicMaterial(Object, reflective)]
 	entao [cria_facto(lightWith(Object, coaxialLight))].
 
-regra 16
+regra 19
 	se [highlight(Object, colour) e characteristicMaterial(Object, shiny)]
 	entao [cria_facto(lightWith(Object, uniformIncidentLight))].
 
-regra 17
+regra 20
 	se [highlight(Object, colour) e characteristicMaterial(Object, shiny)]
 	entao [cria_facto(lightWith(Object, polarizingFilter))].
 
-regra 18
+regra 21
 	se [highlight(Object, colour) e characteristicMaterial(Object, others)]
 	entao [cria_facto(lightWith(Object, directLight))].

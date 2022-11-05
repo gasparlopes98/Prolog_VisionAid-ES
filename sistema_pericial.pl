@@ -127,19 +127,25 @@ concluir([],_,_):-!.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Inserir Objeto
 
-condicao1(Facto,Nome,String):-
-	findall(Facto, facto(_,Facto), LFactos),
-	length(LFactos,Leng),
-	Leng>0,
-	write(String),
-	read(Result),
-	cria_facto1(characteristicMaterial(Nome,Result)).
+funcao(Facto2,Nome,0):-
+	condicao2(Facto2,Nome).
 
-condicao2(Facto,Nome,String):-
+funcao(Facto2,Nome,1):-
+	write("Caracteristica do material?"),
+	read(Result),
+	cria_facto1(characteristicMaterial(Nome,Result)),
+	condicao2(Facto2,Nome).
+
+condicao1(Facto,Nome,Facto2):-
+	findall(Facto, facto(_,Facto), LFactos),
+	length(LFactos,Leng),
+	funcao(Facto2,Nome,Leng).
+
+condicao2(Facto,Nome):-
 	findall(Facto, facto(_,Facto), LFactos),
 	length(LFactos,Leng),
 	Leng>0,
-	write(String),
+	write("Qual o tipo de luz?"),
 	read(Result),
 	cria_facto1(typeLight(Nome,Result)).
 
@@ -148,21 +154,21 @@ inserir_objeto:-
 	read(Nome),
 	write('Qual o tamanho do objeto'),
 	read(Size),
+	write('Luz externa? (sim/nao)'),
+	read(Ext),
 	write('Tipo de material?'),
 	read(Tipo),
 	write('Está em movimento? (sim/nao)'),
 	read(Mov),
 	write('O que quer inspecionar?'),
 	read(Highlight),
-	write('Luz externa? (sim/nao)'),
-	read(Ext),
 	cria_facto1(size(Nome,Size)),
 	cria_facto1(material(Nome,Tipo)),
+	cria_facto1(externalLight(Nome,Ext)),
 	cria_facto1(motion(Nome,Mov)),
 	cria_facto1(highlight(Nome,Highlight)),
-	cria_facto1(externalLight(Nome,Ext)),
-	condicao1(highlight(Nome,colour),Nome,"Caracteristica do material?"),
-	condicao2(externalLight(Nome,yes),Nome,"Qual o tipo de luz?").
+	condicao1(highlight(Nome,colour),Nome,externalLight(Nome,sim)).
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
