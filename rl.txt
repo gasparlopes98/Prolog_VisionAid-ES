@@ -1,6 +1,4 @@
-
-:-dynamic facto/2,ultimo_facto/1.
-:- dynamic justifica/3.
+:- dynamic facto/2,ultimo_facto/1,justifica/3.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Metaconhecimento
@@ -12,16 +10,16 @@ facto_dispara_regras(material(_, blackPlastic), [6,8]).
 facto_dispara_regras(material(_, glassTransparentPlastic), [7,8]).
 facto_dispara_regras(material(_, semiMetalic), [6,7,8]).
 facto_dispara_regras(material(_, metalic), [5,6,7,8,9]).
-facto_dispara_regras(material(_, differentColourPieces), [10]).
-facto_dispara_regras(motion(_, yes), [11]).
+facto_dispara_regras(material(_, differentColourPieces), [6,10]).
+facto_dispara_regras(motion(_, sim), [11]).
 facto_dispara_regras(highlight(_, heightInspection), [12]).
 facto_dispara_regras(highlight(_, holesOrPartSizing), [13]).
 facto_dispara_regras(highlight(_, contours), [14]).
-facto_dispara_regras(highlight(_, colour), [15, 16, 17]).
+facto_dispara_regras(highlight(_, colour), [15, 16, 17, 18]).
 facto_dispara_regras(characteristicMaterial(_, reflective), [15]).
-facto_dispara_regras(characteristicMaterial(_, shiny), [16]).
-facto_dispara_regras(characteristicMaterial(_, others), [17, 18]).
-facto_dispara_regras(externalLight(_, yes), [19, 20, 21]).
+facto_dispara_regras(characteristicMaterial(_, shiny), [16, 17]).
+facto_dispara_regras(characteristicMaterial(_, others), [18]).
+facto_dispara_regras(externalLight(_, sim), [19, 20, 21]).
 facto_dispara_regras(typeLight(_, ir), [19]).
 facto_dispara_regras(typeLight(_, uv), [20]).
 facto_dispara_regras(typeLight(_, other), [21]).
@@ -51,7 +49,6 @@ regra 4
 	entao [cria_facto(light(Object, ultraViolet))].
 
 regra 5
-	%se [material(Object, blackRubber) ou material(Object, metalic)]
 	se [material(Object, blackRubber) ou material(Object, metalic)]
 	entao [cria_facto(light(Object, blue))].
 
@@ -77,7 +74,7 @@ regra 10
 
 % === Motion light === 
 regra 11
-	se [motion(Object, yes)]
+	se [motion(Object, sim)]
 	entao [cria_facto(mode(Object, lightInStrobe))].
 
 % === Highlights === 
@@ -109,31 +106,3 @@ regra 17
 regra 18
 	se [highlight(Object, colour) e characteristicMaterial(Object, others)]
 	entao [cria_facto(lightWith(Object, directLight))].
-
-% === External light influence === 
-regra 19
-	se [externalLight(Object, yes) e typeLight(Object, ir)]
-	entao [cria_facto(bandpassFilter(Object, band700nm))].
-
-regra 20
-	se [externalLight(Object, yes) e typeLight(Object, uv)]
-	entao [cria_facto(bandpassFilter(Object, band400nm))].
-
-regra 21
-	se [externalLight(Object, yes) e typeLight(Object, other)]
-	entao [cria_facto(bandpassFilter(Object, closeVisionSetup))].
-
-%facto(1,size(objeto_1,200)).
-%facto(2,material(objeto_1,dopedWithUvFluorescingAgent)).
-%facto(3,highlight(objeto_1,contours)).
-
-%cria_facto(characteristicMaterial(objeto_3,reflective),_,_).
-%whynot(lens(ob1, vinteCincomm)).
-
-% size(O,sizeO)
-% material(O,materialO)
-% motion(O,Y/N)
-% highlight(O, highlightO)
-% characteristicMaterial(O, charO)
-% externalLight(O, Y/N)
-% typeLight(O, typeO)
