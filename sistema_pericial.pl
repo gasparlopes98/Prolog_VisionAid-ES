@@ -18,11 +18,11 @@ debug(N):- write(N),write('\n').
 debug_message(M,N):- write(M), write(": "),write(N),write('\n').
 
 carrega_bc:-
-		%write('=== Base de Conhecimentos Carregada ==='),nl,
-		%consult("rl.txt").	
-		write('NOME DA BASE DE CONHECIMENTO (terminar com .)-> '),
-		read(NBC),
-		consult(NBC).
+		write('=== Base de Conhecimentos Carregada ==='),nl,
+		consult("rl.txt").	
+%		write('NOME DA BASE DE CONHECIMENTO (terminar com .)-> '),
+%		read(NBC),
+%		consult(NBC).
 
 help:-
 	write('- Para Carregar a BC: carrega_bc'),nl,
