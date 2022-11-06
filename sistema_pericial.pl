@@ -1,8 +1,5 @@
-% Versão preparada para lidar com regras que contenham negação (nao)
-% Metaconhecimento
-% Usar base de conhecimento veIculos2.txt
-% asdsada
-% Explicações como?(how?) e porque não?(whynot?)
+% ========= Trabalho PPROGIA ==========
+% = Team 9 - Industrial Vision Aid_ES =
 
 :-op(220,xfx,entao).
 :-op(35,xfy,se).
@@ -12,10 +9,6 @@
 :-op(700,xfy,ou).
 
 :-dynamic justifica/3.
-
-% ferramenta debug
-debug(N):- write(N),write('\n').
-debug_message(M,N):- write(M), write(": "),write(N),write('\n').
 
 carrega_bc:-
 		write('=== Base de Conhecimentos Carregada ==='),nl,
