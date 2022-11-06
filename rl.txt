@@ -49,7 +49,7 @@ regra 4
 	entao [cria_facto(filter(Object, filter700nm))].
 
 regra 5
-	se [externalLight(Object, sim) e typeLight(Object, uv) e not(material(Object, dopedWithUvFluorescingAgent))]
+	se [externalLight(Object, sim) e typeLight(Object, uv) e nao(material(Object, dopedWithUvFluorescingAgent))]
 	entao [cria_facto(filter(Object, filter400nm))].
 
 regra 6

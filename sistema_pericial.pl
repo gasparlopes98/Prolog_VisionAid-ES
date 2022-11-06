@@ -13,13 +13,13 @@
 
 :-dynamic justifica/3.
 
-
+% ferramenta debug
 debug(N):- write(N),write('\n').
 debug_message(M,N):- write(M), write(": "),write(N),write('\n').
 
 carrega_bc:-
 		write('=== Base de Conhecimentos Carregada ==='),nl,
-		consult("rl.txt").
+		consult("rl.txt").	
 %		write('NOME DA BASE DE CONHECIMENTO (terminar com .)-> '),
 %		read(NBC),
 %		consult(NBC).
@@ -29,8 +29,8 @@ help:-
 	write('- Para Inserir Objeto: inserir_objeto'),nl,
 	write('- Para Arrancar o MI: arranca_motor'),nl,
 	write('- Para Mostrar Factos: mostra_factos'),nl,
-	write('- Para Perceber Facto (N - número de facto): como(N)'),nl,
-	write('- Para Perceber Facto Não Acionado ex.: whynot(lens(nome_obj, tamanho)).'),nl.
+	write('- Para Perceber Facto (N - numero de facto): como(N)'),nl,
+	write('- Para Perceber Facto Nao Acionado ex.: whynot(lens(nome_obj, tamanho)).'),nl.
 
 arranca_motor:-	facto(N,Facto),
 		facto_dispara_regras1(Facto, LRegras),
@@ -127,21 +127,31 @@ concluir([],_,_):-!.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Inserir Objeto
 
-funcao(Facto2,Nome,0):-
-	condicao2(Facto2,Nome).
+% Não deixa criar objetos com o mesmo nome
+ver_nome(F):-
+	findall(F, facto(_, F), LFactos),
+	length(LFactos,Leng),
+	Leng<1.
 
-funcao(Facto2,Nome,1):-
-	write("Caracteristica do material?"),
-	read(Result),
-	cria_facto1(characteristicMaterial(Nome,Result)),
-	condicao2(Facto2,Nome).
-
-condicao1(Facto,Nome,Facto2):-
+% Encontra hilight == colour
+ver_highlight(Facto,Nome,Facto2):-
 	findall(Facto, facto(_,Facto), LFactos),
 	length(LFactos,Leng),
 	funcao(Facto2,Nome,Leng).
 
-condicao2(Facto,Nome):-
+% Se hilight != colour, chama ver_luz
+funcao(Facto2,Nome,0):-
+	ver_luz(Facto2,Nome).
+
+% Se hilight == colour, pergunta caracteristicas e chama ver_luz
+funcao(Facto2,Nome,1):-
+	write("Caracteristica do material?"),
+	read(Result),
+	cria_facto1(characteristicMaterial(Nome,Result)),
+	ver_luz(Facto2,Nome).
+
+% Encontra external Light == yes
+ver_luz(Facto,Nome):-
 	findall(Facto, facto(_,Facto), LFactos),
 	length(LFactos,Leng),
 	Leng>0,
@@ -158,29 +168,29 @@ inserir_objeto:-
 	read(Ext),
 	write('Tipo de material?'),
 	read(Tipo),
-	write('Está em movimento? (sim/nao)'),
+	write('Esta em movimento? (sim/nao)'),
 	read(Mov),
 	write('O que quer inspecionar?'),
 	read(Highlight),
+	ver_nome(size(Nome,_)),
 	cria_facto1(size(Nome,Size)),
 	cria_facto1(material(Nome,Tipo)),
 	cria_facto1(externalLight(Nome,Ext)),
 	cria_facto1(motion(Nome,Mov)),
 	cria_facto1(highlight(Nome,Highlight)),
-	condicao1(highlight(Nome,colour),Nome,externalLight(Nome,sim)).
-
+	ver_highlight(highlight(Nome,colour),Nome,externalLight(Nome,sim)).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Criar Facto
-
+% Criar Facto sem justificação
 cria_facto1(F):-
 	retract(ultimo_facto(N1)),
 	N is N1+1,
 	asserta(ultimo_facto(N)),
 	assertz(facto(N,F)),
-	write('O facto numero '),write(N),write(' foi concluído -> '),write(F),get0(_),!.
+	write('O facto numero '),write(N),write(' foi concluido -> '),write(F),get0(_),!.
 
+% Criar Facto
 cria_facto(F,_,_):-
 	facto(_,F),!.
 
@@ -190,7 +200,7 @@ cria_facto(F,ID,LFactos):-
 	asserta(ultimo_facto(N)),
 	assertz(justifica(N,ID,LFactos)),
 	assertz(facto(N,F)),
-	write('O facto numero '),write(N),write(' foi concluído -> '),write(F),get0(_),!.
+	write('O facto numero '),write(N),write(' foi concluido -> '),write(F),get0(_),!.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 avalia(N,P):-	P=..[Functor,Entidade,Operando,Valor],
@@ -216,10 +226,10 @@ mostra_factos:-
 % Geração de explicações do tipo "Como"
 
 como(N):-ultimo_facto(Last),Last<N,!,
-	write('A conclusão não foi encontrada'),nl,nl.
+	write('A conclusao nao foi encontrada'),nl,nl.
 como(N):-justifica(N,ID,LFactos),!,
 	facto(N,F),
-	write('Conclui o facto número '),write(N),write(' -> '),write(F),nl,
+	write('Conclui o facto numero '),write(N),write(' -> '),write(F),nl,
 	write('com a regra '),write(ID),nl,
 	write('depois de verificar:'),nl,
 	escreve_factos(LFactos),
@@ -234,10 +244,10 @@ como(N):-facto(N,F),
 % Escreve factos -> chamado no como e no mostra_factos
 
 escreve_factos([I|R]):-facto(I,F), !,
-	write('O facto numero '),write(I),write(' -> '),write(F),write(' é verdadeira'),nl,
+	write('O facto numero '),write(I),write(' -> '),write(F),write(' e verdadeira'),nl,
 	escreve_factos(R),!.
 escreve_factos([I|R]):-
-	write('A condição '),write(I),write(' é verdadeira'),nl,
+	write('A condicao '),write(I),write(' e verdadeira'),nl,
 	escreve_factos(R).
 escreve_factos([]).
 
@@ -255,16 +265,16 @@ whynot(Facto):-
 whynot(Facto,_):-
 	facto(_, Facto),
 	!,
-	write('O facto '),write(Facto),write(' não é falso!'),nl.
+	write('O facto '),write(Facto),write(' nao e falso!'),nl.
 whynot(Facto,Nivel):-
 	encontra_regras_whynot(Facto,LLPF),
 	whynot1(LLPF,Nivel).
 whynot(nao Facto,Nivel):-
 	formata(Nivel),write('Porque:'),write(' O facto '),write(Facto),
-	write(' é verdadeiro'),nl.
+	write(' e verdadeiro'),nl.
 whynot(Facto,Nivel):-
 	formata(Nivel),write('Porque:'),write(' O facto '),write(Facto),
-	write(' não é definido na base de conhecimento'),nl.
+	write(' nao e definido na base de conhecimento'),nl.
 
 %  As explicações do whynot(Facto) devem considerar todas as regras que poderiam dar origem a conclusão relativa ao facto Facto
 
@@ -312,14 +322,14 @@ encontra_premissas_falsas([]).
 explica_porque_nao([],_).
 explica_porque_nao([nao avalia(X)|LPF],Nivel):-
 	!,
-	formata(Nivel),write('A condição '),write(X),write(' é falsa'),nl,
+	formata(Nivel),write('A condicao '),write(X),write(' e falsa'),nl,
 	explica_porque_nao(LPF,Nivel).
 explica_porque_nao([avalia(X)|LPF],Nivel):-
 	!,
-	formata(Nivel),write('A condição '),write(X),write(' é falsa'),nl,
+	formata(Nivel),write('A condicao '),write(X),write(' e falsa'),nl,
 	explica_porque_nao(LPF,Nivel).
 explica_porque_nao([P|LPF],Nivel):-
-	formata(Nivel),write('A premissa '),write(P),write(' é falsa'),nl,
+	formata(Nivel),write('A premissa '),write(P),write(' e falsa'),nl,
 	Nivel1 is Nivel+1,
 	whynot(P,Nivel1),
 	explica_porque_nao(LPF,Nivel).
