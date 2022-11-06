@@ -13,7 +13,7 @@
 
 :-dynamic justifica/3.
 
-
+% ferramenta debug
 debug(N):- write(N),write('\n').
 debug_message(M,N):- write(M), write(": "),write(N),write('\n').
 
@@ -127,26 +127,31 @@ concluir([],_,_):-!.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Inserir Objeto
 
-verificanome(F):-
+% Não deixa criar objetos com o mesmo nome
+ver_nome(F):-
 	findall(F, facto(_, F), LFactos),
 	length(LFactos,Leng),
-	Leng < 1.
+	Leng<1.
 
-funcao(Facto2,Nome,0):-
-	condicao2(Facto2,Nome).
-
-funcao(Facto2,Nome,1):-
-	write("Caracteristica do material?"),
-	read(Result),
-	cria_facto1(characteristicMaterial(Nome,Result)),
-	condicao2(Facto2,Nome).
-
-condicao1(Facto,Nome,Facto2):-
+% Encontra hilight == colour
+ver_highlight(Facto,Nome,Facto2):-
 	findall(Facto, facto(_,Facto), LFactos),
 	length(LFactos,Leng),
 	funcao(Facto2,Nome,Leng).
 
-condicao2(Facto,Nome):-
+% Se hilight != colour, chama ver_luz
+funcao(Facto2,Nome,0):-
+	ver_luz(Facto2,Nome).
+
+% Se hilight == colour, pergunta caracteristicas e chama ver_luz
+funcao(Facto2,Nome,1):-
+	write("Caracteristica do material?"),
+	read(Result),
+	cria_facto1(characteristicMaterial(Nome,Result)),
+	ver_luz(Facto2,Nome).
+
+% Encontra external Light == yes
+ver_luz(Facto,Nome):-
 	findall(Facto, facto(_,Facto), LFactos),
 	length(LFactos,Leng),
 	Leng>0,
@@ -167,19 +172,17 @@ inserir_objeto:-
 	read(Mov),
 	write('O que quer inspecionar?'),
 	read(Highlight),
-	verificanome(size(Nome,_)),
+	ver_nome(size(Nome,_)),
 	cria_facto1(size(Nome,Size)),
 	cria_facto1(material(Nome,Tipo)),
 	cria_facto1(externalLight(Nome,Ext)),
 	cria_facto1(motion(Nome,Mov)),
 	cria_facto1(highlight(Nome,Highlight)),
-	condicao1(highlight(Nome,colour),Nome,externalLight(Nome,sim)).
-
+	ver_highlight(highlight(Nome,colour),Nome,externalLight(Nome,sim)).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Criar Facto
-
+% Criar Facto sem justificação
 cria_facto1(F):-
 	retract(ultimo_facto(N1)),
 	N is N1+1,
@@ -187,6 +190,7 @@ cria_facto1(F):-
 	assertz(facto(N,F)),
 	write('O facto numero '),write(N),write(' foi concluido -> '),write(F),get0(_),!.
 
+% Criar Facto
 cria_facto(F,_,_):-
 	facto(_,F),!.
 
